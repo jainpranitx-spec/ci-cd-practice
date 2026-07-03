@@ -1,25 +1,19 @@
-name: My First CI Pipeline
-
-# 1. Trigger: When should this pipeline run?
-on:
+name: Python Automation Challenge
+on: 
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-# 2. Jobs: What should the pipeline actually do?
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Step 1 - Check out our repository code
-        uses: actions/checkout@v4
-
-      - name: Step 2 - Say hello to the engineer
-        run: echo "Hello! The code has been successfully pulled onto the runner."
-
-      - name: Step 3 - Simulate running a test suite
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8  
+      - name: Run tests
         run: |
-          echo "Running unit tests..."
-          echo "All tests passed successfully!"
+          echo "Running tests..."
+          python script.py
