@@ -8,6 +8,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 👇 This connects your runner to tmate's secure network relay
+      # 👇 Adding "detached: true" stops the action from looping/printing lines constantly
       - name: Open Secure Web Tunnel
         uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
