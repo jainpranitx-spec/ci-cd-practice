@@ -8,35 +8,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 1. Install TigerVNC and noVNC packages via Homebrew
-      - name: Install VNC Tools and Proxy
-        run: |
-          brew install tigervnc novnc
-
-      # 2. Start a standalone standalone virtual VNC server on display :1 (Port 5901)
-      - name: Start TigerVNC Server
-        run: |
-          # Create a basic configuration and launch it without requiring a password
-          mkdir -p ~/.vnc
-          echo "localhost" > ~/.vnc/config
-          vncserver :1 -geometry 1280x720 -SecurityTypes None &
-          sleep 3
-
-      # 3. Connect noVNC to translate our new TigerVNC port (5901) to web port (6080)
-      - name: Launch noVNC Web Server
-        run: |
-          websockify --web /opt/homebrew/share/novnc 6080 localhost:5901 &
-          sleep 2
-          echo "noVNC web interface is running on port 6080!"
-
-      # 4. Create the secure tunnel to let your laptop connect
+      # 👇 This sets up the secure tunnel and gives us the interactive web console
       - name: Open Secure Web Tunnel
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
 
-      # 5. 👇 KEEP ALIVE LOOP: Prevents GitHub from closing the runner when tmate detaches
+      # 👇 Forces the VM to stay alive while you play with it
       - name: Keep Runner Alive (Max 6 Hours)
         run: |
-          echo "Keep-alive loop engaged. This machine will stay online until you cancel the workflow run or it hits the 6-hour limit."
+          echo "Keep-alive loop engaged."
           while true; do sleep 60; done
