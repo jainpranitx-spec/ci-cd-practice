@@ -13,6 +13,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.8'
+      - name: List all files
+        run: |
+          echo "Listing all files in the repository..."
+          ls -la  
       - name: Run tests
         run: |
           echo "Running tests..."
