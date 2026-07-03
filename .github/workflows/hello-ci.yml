@@ -11,8 +11,6 @@ jobs:
       # 👇 This sets up the secure tunnel and gives us the interactive web console
       - name: Open Secure Web Tunnel
         uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
       # 👇 Forces the VM to stay alive while you play with it
       - name: Keep Runner Alive (Max 6 Hours)
