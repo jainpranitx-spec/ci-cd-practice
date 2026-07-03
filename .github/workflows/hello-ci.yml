@@ -8,12 +8,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 👇 This sets up the secure tunnel and gives us the interactive web console
+      # 👇 This connects your runner to tmate's secure network relay
       - name: Open Secure Web Tunnel
         uses: mxschmitt/action-tmate@v3
-
-      # 👇 Forces the VM to stay alive while you play with it
-      - name: Keep Runner Alive (Max 6 Hours)
-        run: |
-          echo "Keep-alive loop engaged."
-          while true; do sleep 60; done
