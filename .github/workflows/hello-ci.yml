@@ -1,23 +1,33 @@
-name: Python Automation Challenge
-on: 
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+name: Open Free macOS noVNC Web Session
+on: workflow_dispatch
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  interactive-web-gui:
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # 1. Force macOS to turn on its native screen-sharing server
+      - name: Enable macOS Screen Sharing (VNC)
+        run: |
+          sudo defaults write /Library/Preferences/com.apple.RemoteManagement VNCAlwaysStartOnConsole -bool true
+          sudo defaults write /Library/Preferences/com.apple.RemoteManagement ControlObserveHandler -string "VNCUser"
+          sudo launchctl kickstart -kp system/com.apple.screensharing
+
+      # 2. Install noVNC and websockify via Homebrew
+      - name: Install noVNC Web Proxy
+        run: |
+          brew install novnc
+          
+      # 3. Start websockify in the background to translate port 5900 into web-ready port 6080
+      - name: Launch noVNC Server
+        run: |
+          websockify --web /opt/homebrew/share/novnc 6080 localhost:5900 &
+          echo "noVNC web server is now listening on port 6080!"
+
+      # 4. Expose the web port 6080 using tmate
+      - name: Open Secure Web Tunnel
+        uses: mxschmitt/action-tmate@v3
         with:
-          python-version: '3.8'
-      - name: List all files
-        run: |
-          echo "Listing all files in the repository..."
-          ls -la  
-      - name: Run tests
-        run: |
-          echo "Running tests..."
-          python script.py
+          limit-access-to-actor: true
